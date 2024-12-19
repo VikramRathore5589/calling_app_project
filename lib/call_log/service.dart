@@ -1,4 +1,4 @@
-import 'package:call_log/call_log.dart';
+import 'package:call_e_log/call_log.dart';
 
 class CallLogService {
   static Future<List<CallLogEntry>> fetchCallLogs() async {

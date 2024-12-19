@@ -17,14 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
-  call_log:
+  call_e_log:
     dependency: "direct main"
     description:
-      name: call_log
-      sha256: efc78ec2176b6d384c46a94e297093636fc87716e4ba1ec744d7b540281ebb62
+      name: call_e_log
+      sha256: "4e8ef87330e0b1208fe4e3ca586f45053180c8451d5c5359dc0e6a34951886c4"
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.3"
+    version: "0.0.4"
   characters:
     dependency: transitive
     description:
