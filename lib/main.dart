@@ -1,3 +1,4 @@
+import 'package:calling_app_project/call_log/call_screen.dart';
 import 'package:calling_app_project/contact/provider/contact_provider.dart';
 import 'package:calling_app_project/contact/service/contact_service.dart';
 import 'package:calling_app_project/sreen/splash_screen.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
           ),
-          home: SplashScreen()),
+          home: CallLogScreen()),
     );
   }
 }

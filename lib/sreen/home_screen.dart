@@ -18,7 +18,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void allowContactPermission() async {
-    if (await Permission.contacts.isGranted) {
+    PermissionStatus permissionStatus = await Permission.contacts.status;
+
+    if (permissionStatus.isGranted) {
       if (mounted) {
         Navigator.pushReplacement(
             context,
@@ -28,6 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     } else {
       PermissionStatus status = await Permission.contacts.request();
+      print('Permission request status: $status'); // Debugging log
+
       if (status.isGranted) {
         if (mounted) {
           Navigator.pushReplacement(
@@ -37,13 +41,14 @@ class _HomeScreenState extends State<HomeScreen> {
               ));
         }
       } else {
-        if (await Permission.contacts.isPermanentlyDenied) {
+        if (status.isDenied) {
+          Core.flutterToast('Permission denied. Please allow access to proceed.');
+          print('Permission denied'); // Debugging log
+        } else if (status.isPermanentlyDenied) {
           Core.flutterToast(
               'Permission denied permanently. Please enable it in settings.');
+          print('Permission permanently denied'); // Debugging log
           openAppSettings();
-        } else {
-          Core.flutterToast(
-              'Permission denied. Please allow access to proceed.');
         }
       }
     }
@@ -84,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     backgroundColor: Color(0xFF5864F8),
                     minimumSize: Size(197, 44)),
                 onPressed: () async {
-                  allowContactPermission();
+                  allowContactPermission(); // Trigger permission request when button is pressed
                 },
                 child: Text(
                   'Allow Access',
