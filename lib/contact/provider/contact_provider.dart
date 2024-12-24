@@ -28,9 +28,6 @@ class ContactProvider extends ChangeNotifier {
     } catch (e) {
       errorMsg = "Failed to fetch contacts: ${e.toString()}";
       Core.flutterToast(errorMsg!);
-    } finally {
-      isLoading = false;
-      notifyListeners();
     }
   }
 
