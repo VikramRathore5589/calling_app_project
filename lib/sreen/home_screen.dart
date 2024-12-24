@@ -1,5 +1,6 @@
 import 'package:calling_app_project/contact/screen/contact_screen.dart';
 import 'package:calling_app_project/core/core.dart';
+import 'package:calling_app_project/tabbar/screen/tabbar_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -25,29 +26,26 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => ContactScreen(),
+              builder: (context) => TabBarExample(),
             ));
       }
     } else {
       PermissionStatus status = await Permission.contacts.request();
-      print('Permission request status: $status'); // Debugging log
 
       if (status.isGranted) {
         if (mounted) {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => ContactScreen(),
+                builder: (context) => TabBarExample(),
               ));
         }
       } else {
         if (status.isDenied) {
           Core.flutterToast('Permission denied. Please allow access to proceed.');
-          print('Permission denied'); // Debugging log
         } else if (status.isPermanentlyDenied) {
           Core.flutterToast(
               'Permission denied permanently. Please enable it in settings.');
-          print('Permission permanently denied'); // Debugging log
           openAppSettings();
         }
       }
