@@ -14,6 +14,8 @@ class TabBarExample extends StatelessWidget {
     ContactScreen(),
   ];
 
+   TabBarExample({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Consumer<TabProvider>(

@@ -7,11 +7,12 @@ class ContactListTile extends StatelessWidget {
   final Contact contact;
   final ContactProvider provider;
 
-  const ContactListTile({Key? key, required this.contact, required this.provider}) : super(key: key);
+  const ContactListTile(
+      {super.key, required this.contact, required this.provider});
 
   @override
   Widget build(BuildContext context) {
-    final contactType = provider.getContactType(contact) ?? "Unknown";
+    final contactType = provider.getContactType(contact);
 
     return ListTile(
       onTap: () {
@@ -23,23 +24,42 @@ class ContactListTile extends StatelessWidget {
         );
       },
       leading: CircleAvatar(
-        backgroundImage: contact.photo != null
-            ? MemoryImage(contact.photo!)
-            : null,
+        backgroundImage:
+            contact.photo != null ? MemoryImage(contact.photo!) : null,
         backgroundColor: contact.photo == null ? Colors.lightBlue[50] : null,
-        child: contact.photo == null ? Icon(Icons.person, color: Colors.blue) : null,
+        child: contact.photo == null
+            ? Icon(Icons.person, color: Colors.blue)
+            : null,
       ),
       title: Row(
         children: [
           Flexible(
             child: Text(
-              contact.displayName ?? "Unknown",
+              contact.displayName,
               style: _contactNameStyle,
               overflow: TextOverflow.ellipsis,
             ),
           ),
           const SizedBox(width: 8),
-          ContactTypeBadge(contactType: contactType),
+          Container(
+            height: 22,
+            width: 70,
+            decoration: BoxDecoration(
+              color: Colors.lightBlue[50],
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.blue),
+            ),
+            child: Center(
+              child: Text(
+                contactType,
+                style: TextStyle(
+                  fontSize: 12,
+                  color:
+                      contactType == "Business" ? Colors.green : Colors.black,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -54,7 +74,7 @@ class ContactListTile extends StatelessWidget {
 class ContactTypeBadge extends StatelessWidget {
   final String contactType;
 
-  const ContactTypeBadge({Key? key, required this.contactType}) : super(key: key);
+  const ContactTypeBadge({super.key, required this.contactType});
 
   @override
   Widget build(BuildContext context) {

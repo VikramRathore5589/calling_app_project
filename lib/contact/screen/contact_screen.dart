@@ -1,5 +1,5 @@
 import 'package:calling_app_project/contact/provider/contact_provider.dart';
-import 'package:calling_app_project/contact/screen/contact_listtile_screen.dart';
+import 'package:calling_app_project/profile/screen/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:provider/provider.dart';
@@ -19,9 +19,11 @@ class _ContactScreenState extends State<ContactScreen> {
   }
 
   Future<void> fetchContact() async {
-    ContactProvider contactProvider =
-        Provider.of<ContactProvider>(context, listen: false);
-    await contactProvider.fetchContacts();
+    Future.microtask(() {
+      ContactProvider contactProvider =
+          Provider.of<ContactProvider>(context, listen: false);
+      contactProvider.fetchContacts();
+    });
   }
 
   @override
@@ -50,45 +52,96 @@ class _ContactScreenState extends State<ContactScreen> {
               final contactsForLetter = groupedContacts[letter]!;
 
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Section header for the first letter
-                    Container(
-                      margin: const EdgeInsets.only(left: 15, top: 10),
-                      width: double.infinity,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(40),
-                      ),
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.only(left: 8.0, top: 6, bottom: 8),
-                        child: Text(
-                          letter,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(left: 15, top: 10),
+                          width: double.infinity,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(40),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 8.0, top: 6, bottom: 8),
+                            child: Text(
+                              letter,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    // List of contacts for the specific letter
-                    Column(
-                      children: [
-                        for (var contact in contactsForLetter)
-                          ContactListTile(
-                            contact: contact,
-                            provider: provider,
-                          ),
-                      ],
-                    )
-                  ],
-                ),
-              );
+                        // List of contacts for the specific letter
+                        ...contactsForLetter.map((contact) {
+                          final contactType = provider.getContactType(contact);
+                          return ListTile(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProfileDetailsScreen(
+                                        callLogList: contact),
+                                  ));
+                            },
+                            leading: contact.photo != null
+                                ? CircleAvatar(
+                                    backgroundImage:
+                                        MemoryImage(contact.photo!),
+                                  )
+                                : CircleAvatar(
+                                    backgroundColor: Colors.lightBlue[50],
+                                    child: Icon(
+                                      Icons.person,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                            title: Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    contact.displayName,
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500),
+                                    overflow: TextOverflow.ellipsis,
+                                    softWrap: true,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 8,
+                                ),
+                                Container(
+                                  height: 22,
+                                  width: 70,
+                                  decoration: BoxDecoration(
+                                      color: Colors.lightBlue[50],
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: Colors.blue,
+                                      )),
+                                  child: Center(
+                                    child: Text(
+                                      contactType,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: contactType == "Business"
+                                            ? Colors.green
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        })
+                      ]));
             },
           );
         },

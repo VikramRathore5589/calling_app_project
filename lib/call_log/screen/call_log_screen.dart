@@ -1,7 +1,5 @@
 import 'package:call_e_log/call_log.dart';
 import 'package:calling_app_project/call_log/provider/call_log_provider.dart';
-import 'package:calling_app_project/call_log/service/call_log_service.dart';
-import 'package:calling_app_project/profile/screen/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';

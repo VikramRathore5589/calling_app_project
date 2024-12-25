@@ -12,14 +12,15 @@ class ContactProvider extends ChangeNotifier {
   bool permissionDenied = false;
   String? errorMsg;
 
-  Future<void> fetchContacts() async {
+  Future fetchContacts() async {
     try {
       isLoading = true;
-      permissionDenied = false;
+      permissionDenied = true;
       errorMsg = null;
-      // notifyListeners();
+      notifyListeners();
 
       contacts = await contactService.fetchContacts();
+      notifyListeners();
 
       if (contacts.isEmpty && !await FlutterContacts.requestPermission()) {
         permissionDenied = true;
@@ -28,7 +29,7 @@ class ContactProvider extends ChangeNotifier {
     } catch (e) {
       errorMsg = "Failed to fetch contacts: ${e.toString()}";
       Core.flutterToast(errorMsg!);
-    }
+    }notifyListeners();
   }
 
   String getContactType(Contact contact) {
