@@ -8,14 +8,16 @@ class SmsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Future loadMessage() async {
+      await Provider.of<SmsProvider>(context, listen: false).loadMessages();
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("SMS Viewer"),
       ),
       body: FutureBuilder(
-        future: Future.microtask(() {
-          Provider.of<SmsProvider>(context, listen: false).loadMessages();
-        }),
+        future:Future.microtask((){ loadMessage();}),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -27,23 +29,20 @@ class SmsScreen extends StatelessWidget {
                 if (smsProvider.messagesList.isEmpty) {
                   return const Center(child: Text("No SMS found"));
                 } else {
-                  final groupedMessages = <String, List<dynamic>>{};
+                  Map<String, List<dynamic>> groupedMessages =
+                      <String, List<dynamic>>{};
                   for (var sms in smsProvider.messagesList) {
                     if (sms.address != null) {
                       groupedMessages
                           .putIfAbsent(sms.address!, () => [])
                           .add(sms);
-                       debugPrint("SMS Address: ${sms.address}, Body: ${sms.body}");
-
                     }
                   }
-
                   return ListView.builder(
                     itemCount: groupedMessages.length,
                     itemBuilder: (context, index) {
                       final sender = groupedMessages.keys.elementAt(index);
                       final messages = groupedMessages[sender]!;
-
                       return ListTile(
                         leading: Icon(
                           Icons.person,
@@ -51,7 +50,7 @@ class SmsScreen extends StatelessWidget {
                         ),
                         title: Text(sender),
                         subtitle: Text(
-                          messages.first.body ?? "No Content",
+                          messages.first.body?? 'no messages',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -59,7 +58,7 @@ class SmsScreen extends StatelessWidget {
                           backgroundColor: Colors.blue,
                           radius: 10,
                           child: Text(
-                            '${messages.length}',
+                            "${messages.length}",
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 12,
