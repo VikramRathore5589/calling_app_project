@@ -15,8 +15,10 @@ class CallLogScreen extends StatefulWidget {
 class _CallLogScreenState extends State<CallLogScreen> {
   @override
   void initState() {
-    fetchCallLogs();
     super.initState();
+    Future.microtask(() {
+      fetchCallLogs();
+    });
   }
 
   Future fetchCallLogs() async {
@@ -29,9 +31,13 @@ class _CallLogScreenState extends State<CallLogScreen> {
     DateTime now = DateTime.now();
     DateTime yesterday = now.subtract(Duration(days: 1));
 
-    if (dateTime.isSameDayAs(now)) {
+    if (dateTime.year == now.year &&
+        dateTime.month == now.month &&
+        dateTime.day == now.day) {
       return DateFormat('hh:mm a').format(dateTime);
-    } else if (dateTime.isSameDayAs(yesterday)) {
+    } else if (dateTime.year == yesterday.year &&
+        dateTime.month == yesterday.month &&
+        dateTime.day == yesterday.day) {
       return "Yesterday";
     } else {
       return DateFormat('MM/dd/yyyy').format(dateTime);
@@ -47,10 +53,10 @@ class _CallLogScreenState extends State<CallLogScreen> {
           return ListView.builder(
             itemCount: provider.callLogList.length,
             itemBuilder: (context, index) {
-              CallLogEntry callLogEntry = provider.callLogList[index];
-              String callType = callLogEntry.callType?.name.toLowerCase() ??
-                  '-';
-              int timestamp = callLogEntry.timestamp ?? 0;
+              CallLogEntry callLog=provider.callLogList[index];
+              String callType =
+                  callLog.callType?.name.toLowerCase() ?? '-';
+              int timestamp = callLog.timestamp ?? 0;
 
               IconData callIcon;
               Color iconColor;
@@ -94,7 +100,7 @@ class _CallLogScreenState extends State<CallLogScreen> {
                   ),
                 ),
                 title: Text(
-                  callLogEntry.name ?? callLogEntry.number ?? '',
+                  callLog.name ?? callLog.number ?? '',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 subtitle: Row(
@@ -120,11 +126,5 @@ class _CallLogScreenState extends State<CallLogScreen> {
         }),
       ),
     );
-  }
-}
-
-extension DateTimeComparison on DateTime {
-  bool isSameDayAs(DateTime other) {
-    return year == other.year && month == other.month && day == other.day;
   }
 }

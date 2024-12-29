@@ -16,7 +16,7 @@ class CallLogProvider extends ChangeNotifier {
     try {
       errorMsg = null;
       isLoading = true;
-      // notifyListeners();
+      notifyListeners();
       callLogList = await callLogService.fetchCallLogs();
       print('fetched call logs');
       isLoading = false;
