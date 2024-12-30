@@ -1,5 +1,6 @@
 import 'package:call_e_log/call_log.dart';
 import 'package:calling_app_project/call_log/provider/call_log_provider.dart';
+import 'package:calling_app_project/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -13,6 +14,9 @@ class CallLogScreen extends StatefulWidget {
 }
 
 class _CallLogScreenState extends State<CallLogScreen> {
+  late IconData callIcon;
+  late Color iconColor;
+
   @override
   void initState() {
     super.initState();
@@ -26,24 +30,6 @@ class _CallLogScreenState extends State<CallLogScreen> {
     await provider.fetchCallLogs();
   }
 
-  String formatTimestamp(int timestamp, {required String callType}) {
-    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
-    DateTime now = DateTime.now();
-    DateTime yesterday = now.subtract(Duration(days: 1));
-
-    if (dateTime.year == now.year &&
-        dateTime.month == now.month &&
-        dateTime.day == now.day) {
-      return DateFormat('hh:mm a').format(dateTime);
-    } else if (dateTime.year == yesterday.year &&
-        dateTime.month == yesterday.month &&
-        dateTime.day == yesterday.day) {
-      return "Yesterday";
-    } else {
-      return DateFormat('MM/dd/yyyy').format(dateTime);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,13 +39,9 @@ class _CallLogScreenState extends State<CallLogScreen> {
           return ListView.builder(
             itemCount: provider.callLogList.length,
             itemBuilder: (context, index) {
-              CallLogEntry callLog=provider.callLogList[index];
-              String callType =
-                  callLog.callType?.name.toLowerCase() ?? '-';
+              CallLogEntry callLog = provider.callLogList[index];
+              String callType = callLog.callType?.name ?? '-';
               int timestamp = callLog.timestamp ?? 0;
-
-              IconData callIcon;
-              Color iconColor;
 
               switch (callType) {
                 case 'missed':
@@ -113,7 +95,8 @@ class _CallLogScreenState extends State<CallLogScreen> {
                     SizedBox(width: 8),
                     Text(callType),
                     SizedBox(width: 8),
-                    Text(formatTimestamp(timestamp, callType: callType)),
+                    Text(Core.formatTimestamp(
+                        timestamp: timestamp, callType: callType)),
                   ],
                 ),
                 trailing: FaIcon(
